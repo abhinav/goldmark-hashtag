@@ -1,0 +1,13 @@
+1
+//- - - - - - - - -//
+Foo #bar # baz.
+//- - - - - - - - -//
+<p>Foo <span class="hashtag"><a href="/tag/bar">#bar</a></span> # baz.</p>
+//= = = = = = = = = = = = = = = = = = = = = = = =//
+2
+//- - - - - - - - -//
+A #known tag and an #unknown tag.
+//- - - - - - - - -//
+<p>A <span class="hashtag"><a href="/tag/known">#known</a></span> tag and an <span class="hashtag">#unknown</span> tag.</p>
+//= = = = = = = = = = = = = = = = = = = = = = = =//
+
