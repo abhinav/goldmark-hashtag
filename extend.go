@@ -27,16 +27,40 @@ type Extender struct {
 	//
 	// Defaults to no links.
 	Resolver Resolver
+
+	// Options is a list of options for this extension.
+	Options []Option
 }
 
 var _ goldmark.Extender = (*Extender)(nil)
+
+// NewExtender creates a new goldmark.Extender to extend goldmark Markdown
+// object with support for parsing and rendering hashtags.
+//
+// Install it on your Markdown object upon creation.
+//
+//  goldmark.New(
+//    goldmark.WithExtensions(
+//      // ...
+//      &hashtag.NewExtender(...),
+//    ),
+//    // ...
+//  )
+//
+// See Extender for more.
+func NewExtender(resolver Resolver, opts ...Option) goldmark.Extender {
+	return &Extender{
+		Resolver: resolver,
+		Options:  opts,
+	}
+}
 
 // Extend extends the provided goldmark Markdown object with support for
 // hashtags.
 func (e *Extender) Extend(m goldmark.Markdown) {
 	m.Parser().AddOptions(
 		parser.WithInlineParsers(
-			util.Prioritized(&Parser{}, 999),
+			util.Prioritized(NewParser(e.Options...), 999),
 		),
 	)
 	m.Renderer().AddOptions(

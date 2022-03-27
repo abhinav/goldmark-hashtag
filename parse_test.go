@@ -17,11 +17,14 @@ func TestParser(t *testing.T) {
 		Body string
 	}
 
+	optObsidianTags := []Option{WithObsidianTags()}
+
 	tests := []struct {
 		desc      string
 		give      string
 		want      *node
 		remaining string
+		opts      []Option
 	}{
 		{
 			desc:      "empty",
@@ -85,6 +88,76 @@ func TestParser(t *testing.T) {
 				Body: "#foo/bar",
 			},
 		},
+		{
+			desc: "obsidian start",
+			give: "#123tag",
+			want: &node{
+				Tag:  "123tag",
+				Body: "#123tag",
+			},
+			opts: optObsidianTags,
+		},
+		{
+			desc: "obsidian deny symbols",
+			give: "#tag%tag",
+			want: &node{
+				Tag:  "tag",
+				Body: "#tag",
+			},
+			remaining: "%tag",
+			opts:      optObsidianTags,
+		},
+		{
+			desc: "obsidian accept underscore",
+			give: "#asd_123",
+			want: &node{
+				Tag:  "asd_123",
+				Body: "#asd_123",
+			},
+			opts: optObsidianTags,
+		},
+		{
+			desc: "obsidian accept dash",
+			give: "#asd-123",
+			want: &node{
+				Tag:  "asd-123",
+				Body: "#asd-123",
+			},
+			opts: optObsidianTags,
+		},
+		{
+			desc: "obsidian accept forward slash",
+			give: "#asd/123",
+			want: &node{
+				Tag:  "asd/123",
+				Body: "#asd/123",
+			},
+			opts: optObsidianTags,
+		},
+		{
+			desc:      "obsidian not all digits",
+			give:      "#123",
+			remaining: "#123",
+			opts:      optObsidianTags,
+		},
+		{
+			desc: "obsidian digits and symbol",
+			give: "#321/123",
+			want: &node{
+				Tag:  "321/123",
+				Body: "#321/123",
+			},
+			opts: optObsidianTags,
+		},
+		{
+			desc: "obsidian accept emojis",
+			give: "#✅/🚧",
+			want: &node{
+				Tag:  "✅/🚧",
+				Body: "#✅/🚧",
+			},
+			opts: optObsidianTags,
+		},
 	}
 
 	for _, tt := range tests {
@@ -95,7 +168,7 @@ func TestParser(t *testing.T) {
 			src := []byte(tt.give)
 			rdr := text.NewReader(src)
 
-			var p Parser
+			p := NewParser(tt.opts...)
 			got := p.Parse(nil /* parent */, rdr, parser.NewContext())
 
 			if tt.want != nil {
