@@ -1,6 +1,6 @@
 module github.com/abhinav/goldmark-hashtag
 
-go 1.17
+go 1.18
 
 require (
 	github.com/forPelevin/gomoji v1.1.3

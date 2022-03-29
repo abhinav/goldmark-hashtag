@@ -1,6 +1,6 @@
 module github.com/abhinav/goldmark-hashtag/tools
 
-go 1.17
+go 1.18
 
 require (
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
