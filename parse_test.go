@@ -9,6 +9,45 @@ import (
 	"github.com/yuin/goldmark/text"
 )
 
+func TestVariantSpan(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		give         string // input string
+		wantDefault  string // empty for invalid
+		wantObsidian string // empty for invalid
+	}{
+		{give: "", wantDefault: "", wantObsidian: ""},
+		{give: "1a", wantDefault: "", wantObsidian: "1a"},
+		{give: "a", wantDefault: "a", wantObsidian: "a"},
+		{give: "a1", wantDefault: "a1", wantObsidian: "a1"},
+		{give: "foo", wantDefault: "foo", wantObsidian: "foo"},
+		{give: "foo bar", wantDefault: "foo", wantObsidian: "foo"},
+		{give: "éabc d", wantDefault: "éabc", wantObsidian: "éabc"},
+		{give: "✅/🚧", wantDefault: "", wantObsidian: "✅/🚧"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.give, func(t *testing.T) {
+			t.Run("default", func(t *testing.T) {
+				var got string
+				if idx := DefaultVariant.span([]byte(tt.give)); idx >= 0 {
+					got = tt.give[:idx]
+				}
+				assert.Equal(t, tt.wantDefault, got)
+			})
+
+			t.Run("obsidian", func(t *testing.T) {
+				var got string
+				if idx := ObsidianVariant.span([]byte(tt.give)); idx >= 0 {
+					got = tt.give[:idx]
+				}
+				assert.Equal(t, tt.wantObsidian, got)
+			})
+		})
+	}
+}
+
 func TestParser(t *testing.T) {
 	t.Parallel()
 
@@ -22,6 +61,7 @@ func TestParser(t *testing.T) {
 		give      string
 		want      *node
 		remaining string
+		variant   Variant
 	}{
 		{
 			desc:      "empty",
@@ -85,6 +125,92 @@ func TestParser(t *testing.T) {
 				Body: "#foo/bar",
 			},
 		},
+		{
+			desc:      "obsidian hash alone",
+			give:      "# foo",
+			remaining: "# foo",
+			variant:   ObsidianVariant,
+		},
+		{
+			desc: "obsidian start",
+			give: "#123tag",
+			want: &node{
+				Tag:  "123tag",
+				Body: "#123tag",
+			},
+			variant: ObsidianVariant,
+		},
+		{
+			desc: "obsidian deny symbols",
+			give: "#tag%tag",
+			want: &node{
+				Tag:  "tag",
+				Body: "#tag",
+			},
+			remaining: "%tag",
+			variant:   ObsidianVariant,
+		},
+		{
+			desc: "obsidian accept underscore",
+			give: "#asd_123",
+			want: &node{
+				Tag:  "asd_123",
+				Body: "#asd_123",
+			},
+			variant: ObsidianVariant,
+		},
+		{
+			desc: "obsidian accept dash",
+			give: "#asd-123",
+			want: &node{
+				Tag:  "asd-123",
+				Body: "#asd-123",
+			},
+			variant: ObsidianVariant,
+		},
+		{
+			desc: "obsidian accept forward slash",
+			give: "#asd/123",
+			want: &node{
+				Tag:  "asd/123",
+				Body: "#asd/123",
+			},
+			variant: ObsidianVariant,
+		},
+		{
+			desc:      "obsidian not all digits",
+			give:      "#123",
+			remaining: "#123",
+			variant:   ObsidianVariant,
+		},
+		{
+			desc: "obsidian ends line",
+			give: "#foo\nbar",
+			want: &node{
+				Tag:  "foo",
+				Body: "#foo",
+			},
+			remaining: "\nbar",
+			variant:   ObsidianVariant,
+		},
+		{
+			desc: "obsidian digits and symbol",
+			give: "#321/123",
+			want: &node{
+				Tag:  "321/123",
+				Body: "#321/123",
+			},
+			variant: ObsidianVariant,
+		},
+		{
+			desc: "obsidian accept emojis",
+			give: "#✅/🚧",
+			want: &node{
+				Tag:  "✅/🚧",
+				Body: "#✅/🚧",
+			},
+			variant: ObsidianVariant,
+		},
 	}
 
 	for _, tt := range tests {
@@ -95,7 +221,7 @@ func TestParser(t *testing.T) {
 			src := []byte(tt.give)
 			rdr := text.NewReader(src)
 
-			var p Parser
+			p := Parser{Variant: tt.variant}
 			got := p.Parse(nil /* parent */, rdr, parser.NewContext())
 
 			if tt.want != nil {

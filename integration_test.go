@@ -18,7 +18,17 @@ func TestIntegration_Default(t *testing.T) {
 		t,
 	)
 }
+func TestIntegration_Obsidian(t *testing.T) {
+	t.Parallel()
 
+	testutil.DoTestCaseFile(
+		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{
+			Variant: hashtag.ObsidianVariant,
+		})),
+		"testdata/obsidian.txt",
+		t,
+	)
+}
 func TestIntegration_Resolver(t *testing.T) {
 	t.Parallel()
 

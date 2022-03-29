@@ -42,6 +42,28 @@ goldmark.New(
 ).Convert(src, out)
 ```
 
+## Syntax
+
+Hashtags must always begin with a "#".
+The characters that follow that depend on the variant you have chosen.
+goldmark-hashtag supports the following variants:
+
+- *Default*: Hashtags must begin with a letter, and may contain letters,
+  numbers and any of the following symbols: `/_-`.
+  goldmark-hashtag uses this variant if you do not specify one.
+- *Obsidian*: Hashtags can begin with and contain letters, numbers, emoji, and
+  any of the following symbols: `/_-`, but must not contain only numbers.
+
+You can specify the variant by setting the `Variant` property of the
+`hashtag.Extender`.
+
+```go
+&hashtag.Extender{
+  // ...
+  Variant: hashtag.ObsidianVariant,
+}
+```
+
 ## Inspection
 
 To collect all hashtags from a Markdown document, use Goldmark's [`ast.Walk`]

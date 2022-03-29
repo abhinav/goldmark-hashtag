@@ -27,6 +27,12 @@ type Extender struct {
 	//
 	// Defaults to no links.
 	Resolver Resolver
+
+	// Variant is the flavor of the hashtag syntax to support.
+	//
+	// Defaults to DefaultVariant. See the documentation of individual
+	// variants for more information.
+	Variant Variant
 }
 
 var _ goldmark.Extender = (*Extender)(nil)
@@ -36,7 +42,9 @@ var _ goldmark.Extender = (*Extender)(nil)
 func (e *Extender) Extend(m goldmark.Markdown) {
 	m.Parser().AddOptions(
 		parser.WithInlineParsers(
-			util.Prioritized(&Parser{}, 999),
+			util.Prioritized(&Parser{
+				Variant: e.Variant,
+			}, 999),
 		),
 	)
 	m.Renderer().AddOptions(
