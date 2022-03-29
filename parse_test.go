@@ -17,14 +17,12 @@ func TestParser(t *testing.T) {
 		Body string
 	}
 
-	optObsidianTags := []Option{WithObsidianTags()}
-
 	tests := []struct {
 		desc      string
 		give      string
 		want      *node
 		remaining string
-		opts      []Option
+		variant   Variant
 	}{
 		{
 			desc:      "empty",
@@ -95,7 +93,7 @@ func TestParser(t *testing.T) {
 				Tag:  "123tag",
 				Body: "#123tag",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 		{
 			desc: "obsidian deny symbols",
@@ -105,7 +103,7 @@ func TestParser(t *testing.T) {
 				Body: "#tag",
 			},
 			remaining: "%tag",
-			opts:      optObsidianTags,
+			variant:   ObsidianVariant,
 		},
 		{
 			desc: "obsidian accept underscore",
@@ -114,7 +112,7 @@ func TestParser(t *testing.T) {
 				Tag:  "asd_123",
 				Body: "#asd_123",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 		{
 			desc: "obsidian accept dash",
@@ -123,7 +121,7 @@ func TestParser(t *testing.T) {
 				Tag:  "asd-123",
 				Body: "#asd-123",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 		{
 			desc: "obsidian accept forward slash",
@@ -132,13 +130,13 @@ func TestParser(t *testing.T) {
 				Tag:  "asd/123",
 				Body: "#asd/123",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 		{
 			desc:      "obsidian not all digits",
 			give:      "#123",
 			remaining: "#123",
-			opts:      optObsidianTags,
+			variant:   ObsidianVariant,
 		},
 		{
 			desc: "obsidian digits and symbol",
@@ -147,7 +145,7 @@ func TestParser(t *testing.T) {
 				Tag:  "321/123",
 				Body: "#321/123",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 		{
 			desc: "obsidian accept emojis",
@@ -156,7 +154,7 @@ func TestParser(t *testing.T) {
 				Tag:  "✅/🚧",
 				Body: "#✅/🚧",
 			},
-			opts: optObsidianTags,
+			variant: ObsidianVariant,
 		},
 	}
 
@@ -168,7 +166,7 @@ func TestParser(t *testing.T) {
 			src := []byte(tt.give)
 			rdr := text.NewReader(src)
 
-			p := NewParser(tt.opts...)
+			p := Parser{Variant: tt.variant}
 			got := p.Parse(nil /* parent */, rdr, parser.NewContext())
 
 			if tt.want != nil {

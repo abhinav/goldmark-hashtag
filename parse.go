@@ -18,12 +18,10 @@ import (
 // is determined by variant. See the documentation for Variant for more
 // details.
 type Parser struct {
-	ParserConfig
-}
-
-// ParserConfig is a set of configuration options for the Parser.
-type ParserConfig struct {
-	// Variant is the tags sytax to parse for.
+	// Variant is the flavor of the hashtag syntax to support.
+	//
+	// Defaults to DefaultVariant. See the documentation of individual
+	// variants for more information.
 	Variant Variant
 }
 
@@ -58,17 +56,6 @@ const (
 var _ parser.InlineParser = (*Parser)(nil)
 
 var _hash = byte('#')
-
-// NewParser creates a new parser.InlineParser to parse hashtags.
-func NewParser(opts ...Option) parser.InlineParser {
-	p := &Parser{}
-	for _, o := range opts {
-		if _, ok := o.(*withObsidianTags); ok {
-			p.Variant = ObsidianVariant
-		}
-	}
-	return p
-}
 
 // Trigger reports characters that trigger this parser.
 func (*Parser) Trigger() []byte {
@@ -133,24 +120,4 @@ func endOfHashtag(r rune) bool {
 	return !(unicode.IsLetter(r) ||
 		unicode.IsDigit(r) ||
 		r == '_' || r == '-' || r == '/')
-}
-
-const (
-	optVariant parser.OptionName = "HashtagVariant"
-)
-
-// Option is a configuration option for the Parser.
-type Option interface {
-	parser.Option
-}
-
-type withObsidianTags struct{}
-
-func (o *withObsidianTags) SetParserOption(c *parser.Config) {
-	c.Options[optVariant] = ObsidianVariant
-}
-
-// WithObsidianTags allows to parse tags in the Obsidian syntax.
-func WithObsidianTags() Option {
-	return &withObsidianTags{}
 }
