@@ -38,7 +38,7 @@ const (
 	// zero or more alphanumeric characters and the following symbols.
 	//
 	//   /_-
-	DefaultVariant Variant = 0
+	DefaultVariant Variant = iota
 
 	// ObsidianVariant is a flavor of the hashtag syntax that aims to be
 	// compatible with Obsidian (https://obsidian.md/).
@@ -52,7 +52,7 @@ const (
 	// non-numeric character.
 	//
 	// See also https://help.obsidian.md/How+to/Working+with+tags.
-	ObsidianVariant = iota
+	ObsidianVariant
 )
 
 var _ parser.InlineParser = (*Parser)(nil)
