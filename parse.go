@@ -25,15 +25,15 @@ type Parser struct {
 // ParserConfig is a set of configuration options for the Parser.
 type ParserConfig struct {
 	// Variant is the tags sytax to parse for.
-	Variant HashtagVariant
+	Variant Variant
 }
 
-// HashtagVariant represents one of the different flavours of hashtag syntax.
-type HashtagVariant uint
+// Variant represents one of the different flavours of hashtag syntax.
+type Variant uint
 
 const (
-	DefaultVariant  HashtagVariant = 0
-	ObsidianVariant                = iota
+	DefaultVariant  Variant = 0
+	ObsidianVariant         = iota
 )
 
 var _ parser.InlineParser = (*Parser)(nil)
