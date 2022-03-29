@@ -53,6 +53,54 @@ const (
 	ObsidianVariant
 )
 
+// span returns the index in the provided string at which the hashtag for this
+// variant ends, or -1 if this is not a valid hashtag string.
+//
+// s must be the part of the hashtag *after* the "#".
+func (v Variant) span(tag []byte) int {
+	switch v {
+	case ObsidianVariant:
+		// Tags cannot contain spaces, so if there's a space, that's
+		// the furthest our tag edge can be. This helps avoid trying to
+		// walk the entire string with uniseg.Graphemes.
+		if idx := bytes.IndexFunc(tag, unicode.IsSpace); idx >= 0 {
+			tag = tag[:idx]
+		}
+		end := len(tag)
+
+		gr := uniseg.NewGraphemes(string(tag))
+		for gr.Next() {
+			if endOfObsidianHashtag(gr) {
+				end, _ = gr.Positions()
+				break
+			}
+		}
+
+		// If there isn't at least one non-numeric character,
+		// this isn't a valid tag.
+		if i := bytes.IndexFunc(tag[:end], nonNumeric); i < 0 {
+			return -1
+		}
+
+		return end
+
+	default:
+		// Hashtag must start with a letter.
+		start, sz := utf8.DecodeRune(tag)
+		if !unicode.IsLetter(start) {
+			return -1
+		}
+		tag = tag[sz:]
+
+		// If the end of the tag is visible, that's the end index.
+		// Otherwise, it's the rest of the string.
+		if i := bytes.IndexFunc(tag, endOfHashtag); i >= 0 {
+			return i + sz // (+ first letter)
+		}
+		return len(tag) + sz // (+ first letter)
+	}
+}
+
 var _ parser.InlineParser = (*Parser)(nil)
 
 var _hash = byte('#')
@@ -71,30 +119,11 @@ func (p *Parser) Parse(parent ast.Node, block text.Reader, pctx parser.Context) 
 	}
 	line = line[1:]
 
-	switch p.Variant {
-	default:
-		// Hashtag must start with a letter.
-		start, sz := utf8.DecodeRune(line)
-		if !unicode.IsLetter(start) {
-			return nil
-		}
-		line = line[sz:]
-
-		// Truncate seg down to "#foo".
-		if i := bytes.IndexFunc(line, endOfHashtag); i >= 0 {
-			seg = seg.WithStop(seg.Start + i + 1 + sz) // + '#' + start
-		} // else { line ends with a "#foo" so seg remains unchanged }
-
-	case ObsidianVariant:
-		if end := endOfObsidianHashtag(line); end >= 0 {
-			line = line[:end]
-			seg = seg.WithStop(seg.Start + end + 1)
-		}
-		// if cannot find something that's not a digit, it's not a valid tag
-		if i := bytes.IndexFunc(line, func(r rune) bool { return !unicode.IsDigit(r) }); i == -1 {
-			return nil
-		}
+	end := p.Variant.span(line)
+	if end < 0 {
+		return nil
 	}
+	seg = seg.WithStop(seg.Start + end + 1) // + '#'
 
 	n := Node{
 		Tag: block.Value(seg.WithStart(seg.Start + 1)), // omit the "#"
@@ -104,20 +133,17 @@ func (p *Parser) Parse(parent ast.Node, block text.Reader, pctx parser.Context) 
 	return &n
 }
 
-func endOfObsidianHashtag(line []byte) int {
-	gr := uniseg.NewGraphemes(string(line))
-	for gr.Next() {
-		rs := gr.Runes()
-		if (len(rs) == 1 && endOfHashtag(rs[0])) && !gomoji.ContainsEmoji(gr.Str()) {
-			pos, _ := gr.Positions()
-			return pos
-		}
-	}
-	return -1
+func nonNumeric(r rune) bool {
+	return !unicode.IsDigit(r)
 }
 
 func endOfHashtag(r rune) bool {
 	return !(unicode.IsLetter(r) ||
 		unicode.IsDigit(r) ||
 		r == '_' || r == '-' || r == '/')
+}
+
+func endOfObsidianHashtag(gr *uniseg.Graphemes) bool {
+	rs := gr.Runes()
+	return len(rs) == 1 && endOfHashtag(rs[0]) && !gomoji.ContainsEmoji(gr.Str())
 }
