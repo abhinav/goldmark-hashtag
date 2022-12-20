@@ -1,4 +1,4 @@
-module github.com/abhinav/goldmark-hashtag
+module go.abhg.dev/goldmark/hashtag
 
 go 1.18
 
