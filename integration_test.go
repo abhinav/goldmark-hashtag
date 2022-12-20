@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	hashtag "github.com/abhinav/goldmark-hashtag"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/testutil"
+	"go.abhg.dev/goldmark/hashtag"
 )
 
 func TestIntegration_Default(t *testing.T) {
@@ -18,6 +18,7 @@ func TestIntegration_Default(t *testing.T) {
 		t,
 	)
 }
+
 func TestIntegration_Obsidian(t *testing.T) {
 	t.Parallel()
 
@@ -29,6 +30,7 @@ func TestIntegration_Obsidian(t *testing.T) {
 		t,
 	)
 }
+
 func TestIntegration_Resolver(t *testing.T) {
 	t.Parallel()
 

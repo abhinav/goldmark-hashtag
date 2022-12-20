@@ -1,4 +1,4 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/abhinav/goldmark-hashtag.svg)](https://pkg.go.dev/github.com/abhinav/goldmark-hashtag)
+[![Go Reference](https://pkg.go.dev/badge/go.abhg.dev/goldmark/hashtag.svg)](https://pkg.go.dev/go.abhg.dev/goldmark/hashtag)
 [![Go](https://github.com/abhinav/goldmark-hashtag/actions/workflows/go.yml/badge.svg)](https://github.com/abhinav/goldmark-hashtag/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/abhinav/goldmark-hashtag/branch/main/graph/badge.svg?token=w6jkI2SQ9u)](https://codecov.io/gh/abhinav/goldmark-hashtag)
 
@@ -12,7 +12,7 @@ support for tagging documents with `#hashtag`s.
 To use goldmark-hashtag, import the `hashtag` package.
 
 ```go
-import hashtag "github.com/abhinav/goldmark-hashtag"
+import "go.abhg.dev/goldmark/hashtag"
 ```
 
 Then include the `hashtag.Extender` in the list of extensions you build your
