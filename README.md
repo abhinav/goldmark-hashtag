@@ -22,7 +22,9 @@ Then include the `hashtag.Extender` in the list of extensions you build your
 
 ```go
 goldmark.New(
-  &hashtag.Extender{},
+  goldmark.WithExtensions(
+    &hashtag.Extender{},
+  ),
   // ...
 ).Convert(src, out)
 ```
@@ -35,9 +37,11 @@ links:
 
 ```go
 goldmark.New(
-  &hashtag.Extender{
-    Resolver: hashtagResolver,
-  },
+  goldmark.WithExtensions(
+    &hashtag.Extender{
+      Resolver: hashtagResolver,
+    },
+  ),
   // ...
 ).Convert(src, out)
 ```
@@ -76,9 +80,11 @@ found in the document.
 
 ```go
 markdown := goldmark.New(
-  &hashtag.Extender{
-    Resolver: hashtagResolver,
-  },
+  goldmark.WithExtensions(
+    &hashtag.Extender{
+      Resolver: hashtagResolver,
+    },
+  ),
   // ...
 )
 
