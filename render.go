@@ -20,16 +20,16 @@ type Resolver interface {
 // Renderer renders hashtag nodes into HTML, optionally linking them to
 // specific pages.
 //
-//  #foo
+//	#foo
 //
 // Renders as the following by default.
 //
-//  <span class="hashtag">#foo</span>
+//	<span class="hashtag">#foo</span>
 //
 // Supply a Resolver that returns a non-empty destination to render it like
 // the following.
 //
-//  <span class="hashtag"><a href="...">#foo</a></span>
+//	<span class="hashtag"><a href="...">#foo</a></span>
 type Renderer struct {
 	// Resolver specifies how where hashtag links should point, if at all.
 	//
