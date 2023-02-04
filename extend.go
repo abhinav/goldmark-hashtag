@@ -12,13 +12,13 @@ import (
 //
 // Install it on your Markdown object upon creation.
 //
-//  goldmark.New(
-//    goldmark.WithExtensions(
-//      // ...
-//      &hashtag.Extender{...},
-//    ),
-//    // ...
-//  )
+//	goldmark.New(
+//	  goldmark.WithExtensions(
+//	    // ...
+//	    &hashtag.Extender{...},
+//	  ),
+//	  // ...
+//	)
 //
 // Provide a Resolver to render tags as links that point to a specific
 // destination.
