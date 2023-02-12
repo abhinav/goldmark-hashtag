@@ -9,45 +9,6 @@ import (
 	"github.com/yuin/goldmark/text"
 )
 
-func TestVariantSpan(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		give         string // input string
-		wantDefault  string // empty for invalid
-		wantObsidian string // empty for invalid
-	}{
-		{give: "", wantDefault: "", wantObsidian: ""},
-		{give: "1a", wantDefault: "", wantObsidian: "1a"},
-		{give: "a", wantDefault: "a", wantObsidian: "a"},
-		{give: "a1", wantDefault: "a1", wantObsidian: "a1"},
-		{give: "foo", wantDefault: "foo", wantObsidian: "foo"},
-		{give: "foo bar", wantDefault: "foo", wantObsidian: "foo"},
-		{give: "éabc d", wantDefault: "éabc", wantObsidian: "éabc"},
-		{give: "✅/🚧", wantDefault: "", wantObsidian: "✅/🚧"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.give, func(t *testing.T) {
-			t.Run("default", func(t *testing.T) {
-				var got string
-				if idx := DefaultVariant.span([]byte(tt.give)); idx >= 0 {
-					got = tt.give[:idx]
-				}
-				assert.Equal(t, tt.wantDefault, got)
-			})
-
-			t.Run("obsidian", func(t *testing.T) {
-				var got string
-				if idx := ObsidianVariant.span([]byte(tt.give)); idx >= 0 {
-					got = tt.give[:idx]
-				}
-				assert.Equal(t, tt.wantObsidian, got)
-			})
-		})
-	}
-}
-
 func TestParser(t *testing.T) {
 	t.Parallel()
 
