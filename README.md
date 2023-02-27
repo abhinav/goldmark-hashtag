@@ -9,6 +9,10 @@ that adds support for tagging documents with `#hashtag`s.
 
   [goldmark]: http://github.com/yuin/goldmark
 
+**Demo**:
+A web-based demonstration of the extension is available at
+<https://abhinav.github.io/goldmark-hashtag/demo/>.
+
 ## Installation
 
 ```bash
