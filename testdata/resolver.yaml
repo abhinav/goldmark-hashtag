@@ -1,0 +1,11 @@
+- name: simple
+  give: |
+    Foo #bar # baz.
+  want: |
+    <p>Foo <span class="hashtag"><a href="/tag/bar">#bar</a></span> # baz.</p>
+
+- name: unknown tag
+  give: |
+    A #known tag and an #unknown tag.
+  want: |
+    <p>A <span class="hashtag"><a href="/tag/known">#known</a></span> tag and an <span class="hashtag">#unknown</span> tag.</p>

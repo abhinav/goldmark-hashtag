@@ -1,0 +1,29 @@
+- desc: simple
+  give: |
+    Foo #bar # baz.
+  want: |
+    <p>Foo <span class="hashtag">#bar</span> # baz.</p>
+
+- desc: line end
+  give: |
+    Line ends with a #tag
+  want: |
+    <p>Line ends with a <span class="hashtag">#tag</span></p>
+
+- desc: line end/trailing text
+  give: |
+    Line ends with a #tag
+    and has text afterwards.
+  want: |
+    <p>Line ends with a <span class="hashtag">#tag</span>
+    and has text afterwards.</p>
+
+- desc: single letter
+  give: |
+    #a
+    #0
+    #b
+  want: |
+    <p><span class="hashtag">#a</span>
+    #0
+    <span class="hashtag">#b</span></p>
