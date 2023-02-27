@@ -1,0 +1,19 @@
+- desc: simple
+  give: |
+    Foo #bar # baz.
+  want: |
+    <p>Foo <span class="hashtag">#bar</span> # baz.</p>
+
+- desc: numeric
+  give: |
+    Numeric #321/123.
+  want: |
+    <p>Numeric <span class="hashtag">#321/123</span>.</p>
+
+- desc: emoji
+  give: |
+    Has emoji #✅/🚧
+    and a newline.
+  want: |
+    <p>Has emoji <span class="hashtag">#✅/🚧</span>
+    and a newline.</p>

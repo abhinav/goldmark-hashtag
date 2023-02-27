@@ -2,45 +2,62 @@ package hashtag_test
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/testutil"
 	"go.abhg.dev/goldmark/hashtag"
+	"gopkg.in/yaml.v3"
 )
 
 func TestIntegration_Default(t *testing.T) {
 	t.Parallel()
 
-	testutil.DoTestCaseFile(
-		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{})),
-		"testdata/default.txt",
-		t,
-	)
+	testIntegration(t, "default.yaml",
+		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{})))
 }
 
 func TestIntegration_Obsidian(t *testing.T) {
 	t.Parallel()
 
-	testutil.DoTestCaseFile(
+	testIntegration(t, "obsidian.yaml",
 		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{
 			Variant: hashtag.ObsidianVariant,
-		})),
-		"testdata/obsidian.txt",
-		t,
-	)
+		})))
 }
 
 func TestIntegration_Resolver(t *testing.T) {
 	t.Parallel()
 
-	testutil.DoTestCaseFile(
+	testIntegration(t, "resolver.yaml",
 		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{
 			Resolver: almostAlwaysResolver{},
-		})),
-		"testdata/resolver.txt",
-		t,
-	)
+		})))
+}
+
+func testIntegration(t *testing.T, file string, md goldmark.Markdown) {
+	testsdata, err := os.ReadFile(filepath.Join("testdata", file))
+	require.NoError(t, err)
+
+	var tests []struct {
+		Desc string `yaml:"desc"`
+		Give string `yaml:"give"`
+		Want string `yaml:"want"`
+	}
+	require.NoError(t, yaml.Unmarshal(testsdata, &tests))
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.Desc, func(t *testing.T) {
+			t.Parallel()
+
+			var buf bytes.Buffer
+			require.NoError(t, md.Convert([]byte(tt.Give), &buf))
+			require.Equal(t, tt.Want, buf.String())
+		})
+	}
 }
 
 var _unknownTag = []byte("unknown")

@@ -39,8 +39,7 @@ type Renderer struct {
 	// Defaults to empty destinations for all hashtags.
 	Resolver Resolver
 
-	once    sync.Once // guards init
-	hasDest map[*Node]struct{}
+	hasDest sync.Map // *Node => struct{}
 }
 
 // RegisterFuncs registers rendering functions from this renderer onto the
@@ -49,16 +48,8 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(Kind, r.Render)
 }
 
-func (r *Renderer) init() {
-	r.once.Do(func() {
-		r.hasDest = make(map[*Node]struct{})
-	})
-}
-
 // Render renders a hashtag node as HTML.
 func (r *Renderer) Render(w util.BufWriter, src []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	r.init()
-
 	n, ok := node.(*Node)
 	if !ok {
 		return ast.WalkStop, fmt.Errorf("unexpected node %T, expected *Node", node)
@@ -91,7 +82,7 @@ func (r *Renderer) enter(w util.BufWriter, n *Node) error {
 		return nil
 	}
 
-	r.hasDest[n] = struct{}{}
+	r.hasDest.Store(n, struct{}{})
 	w.WriteString(`<a href="`)
 	w.Write(util.URLEscape(dest, true /* resolve references */))
 	w.WriteString(`">`)
@@ -99,8 +90,7 @@ func (r *Renderer) enter(w util.BufWriter, n *Node) error {
 }
 
 func (r *Renderer) exit(w util.BufWriter, n *Node) {
-	if _, ok := r.hasDest[n]; ok {
-		delete(r.hasDest, n)
+	if _, ok := r.hasDest.LoadAndDelete(n); ok {
 		w.WriteString("</a>")
 	}
 	w.WriteString("</span>")
