@@ -111,7 +111,7 @@ func (*Parser) Trigger() []byte {
 }
 
 // Parse parses a hashtag node.
-func (p *Parser) Parse(parent ast.Node, block text.Reader, pctx parser.Context) ast.Node {
+func (p *Parser) Parse(_ ast.Node, block text.Reader, _ parser.Context) ast.Node {
 	line, seg := block.PeekLine()
 
 	if len(line) == 0 || line[0] != _hash {
@@ -138,9 +138,9 @@ func nonNumeric(r rune) bool {
 }
 
 func endOfHashtag(r rune) bool {
-	return !(unicode.IsLetter(r) ||
-		unicode.IsDigit(r) ||
-		r == '_' || r == '-' || r == '/')
+	return !unicode.IsLetter(r) &&
+		!unicode.IsDigit(r) &&
+		r != '_' && r != '-' && r != '/'
 }
 
 func endOfObsidianHashtag(gr *uniseg.Graphemes) bool {
