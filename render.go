@@ -49,7 +49,7 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 }
 
 // Render renders a hashtag node as HTML.
-func (r *Renderer) Render(w util.BufWriter, src []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Renderer) Render(w util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n, ok := node.(*Node)
 	if !ok {
 		return ast.WalkStop, fmt.Errorf("unexpected node %T, expected *Node", node)
