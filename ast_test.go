@@ -1,7 +1,6 @@
 package hashtag
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,8 +12,8 @@ import (
 	"github.com/yuin/goldmark/text"
 )
 
+// /nolint:paralleltest // hijacks os.Stdout
 func TestNodeDump(t *testing.T) {
-	// Hijack stdout to capture output of Dump.
 	stdoutPath := filepath.Join(t.TempDir(), "stdout")
 	stdout, err := os.Create(stdoutPath)
 	require.NoError(t, err)
@@ -30,7 +29,7 @@ func TestNodeDump(t *testing.T) {
 
 	require.NoError(t, stdout.Close())
 
-	got, err := ioutil.ReadFile(stdoutPath)
+	got, err := os.ReadFile(stdoutPath)
 	require.NoError(t, err)
 	assert.Equal(t, strings.Join([]string{
 		"Hashtag {",
