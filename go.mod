@@ -1,6 +1,6 @@
 module go.abhg.dev/goldmark/hashtag
 
-go 1.18
+go 1.19
 
 require (
 	github.com/forPelevin/gomoji v1.1.3

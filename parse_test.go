@@ -28,8 +28,13 @@ func TestVariantSpan(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.give, func(t *testing.T) {
+			t.Parallel()
+
 			t.Run("default", func(t *testing.T) {
+				t.Parallel()
+
 				var got string
 				if idx := DefaultVariant.span([]byte(tt.give)); idx >= 0 {
 					got = tt.give[:idx]
@@ -38,6 +43,8 @@ func TestVariantSpan(t *testing.T) {
 			})
 
 			t.Run("obsidian", func(t *testing.T) {
+				t.Parallel()
+
 				var got string
 				if idx := ObsidianVariant.span([]byte(tt.give)); idx >= 0 {
 					got = tt.give[:idx]

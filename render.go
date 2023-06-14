@@ -67,7 +67,7 @@ func (r *Renderer) Render(w util.BufWriter, _ []byte, node ast.Node, entering bo
 }
 
 func (r *Renderer) enter(w util.BufWriter, n *Node) error {
-	w.WriteString(`<span class="hashtag">`)
+	_, _ = w.WriteString(`<span class="hashtag">`)
 
 	var dest []byte
 	if res := r.Resolver; res != nil {
@@ -83,15 +83,15 @@ func (r *Renderer) enter(w util.BufWriter, n *Node) error {
 	}
 
 	r.hasDest.Store(n, struct{}{})
-	w.WriteString(`<a href="`)
-	w.Write(util.URLEscape(dest, true /* resolve references */))
-	w.WriteString(`">`)
+	_, _ = w.WriteString(`<a href="`)
+	_, _ = w.Write(util.URLEscape(dest, true /* resolve references */))
+	_, _ = w.WriteString(`">`)
 	return nil
 }
 
 func (r *Renderer) exit(w util.BufWriter, n *Node) {
 	if _, ok := r.hasDest.LoadAndDelete(n); ok {
-		w.WriteString("</a>")
+		_, _ = w.WriteString("</a>")
 	}
-	w.WriteString("</span>")
+	_, _ = w.WriteString("</span>")
 }
