@@ -5,7 +5,7 @@ go 1.20
 replace go.abhg.dev/goldmark/hashtag => ../
 
 require (
-	github.com/yuin/goldmark v1.5.4
+	github.com/yuin/goldmark v1.5.5
 	go.abhg.dev/goldmark/hashtag v0.0.0-00010101000000-000000000000
 )
 
