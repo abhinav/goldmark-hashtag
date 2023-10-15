@@ -12,7 +12,6 @@ import (
 	"github.com/yuin/goldmark/text"
 )
 
-// /nolint:paralleltest // hijacks os.Stdout
 func TestNodeDump(t *testing.T) {
 	stdoutPath := filepath.Join(t.TempDir(), "stdout")
 	stdout, err := os.Create(stdoutPath)
