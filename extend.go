@@ -33,6 +33,13 @@ type Extender struct {
 	// Defaults to DefaultVariant. See the documentation of individual
 	// variants for more information.
 	Variant Variant
+
+	// Attributes are added to the <a> tag.
+	//
+	// Attributes are no escaped and must be valid attributes and values for HTML tags.
+	// Attributes will only be applied if the tag can be resolved by the Resolver.
+	// Defaults to no attributes.
+	Attributes []Attribute
 }
 
 var _ goldmark.Extender = (*Extender)(nil)
@@ -50,7 +57,8 @@ func (e *Extender) Extend(m goldmark.Markdown) {
 	m.Renderer().AddOptions(
 		renderer.WithNodeRenderers(
 			util.Prioritized(&Renderer{
-				Resolver: e.Resolver,
+				Resolver:   e.Resolver,
+				Attributes: e.Attributes,
 			}, 999),
 		),
 	)

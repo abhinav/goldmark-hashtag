@@ -39,7 +39,19 @@ type Renderer struct {
 	// Defaults to empty destinations for all hashtags.
 	Resolver Resolver
 
+	Attributes []Attribute
+
 	hasDest sync.Map // *Node => struct{}
+}
+
+// Attribute defines an attribute to be added to an HTML tag.
+//
+// Attribute{ Attr: "class", Value: "tag"}
+//
+// Will result in <a class="tag" ...>
+type Attribute struct {
+	Attr  string
+	Value string
 }
 
 // RegisterFuncs registers rendering functions from this renderer onto the
@@ -83,7 +95,14 @@ func (r *Renderer) enter(w util.BufWriter, n *Node) error {
 	}
 
 	r.hasDest.Store(n, struct{}{})
-	_, _ = w.WriteString(`<a href="`)
+	_, _ = w.WriteString(`<a `)
+	for _, attr := range r.Attributes {
+		_, _ = w.WriteString(attr.Attr)
+		_, _ = w.WriteString(`="`)
+		_, _ = w.WriteString(attr.Value)
+		_, _ = w.WriteString(`" `)
+	}
+	_, _ = w.WriteString(`href="`)
 	_, _ = w.Write(util.URLEscape(dest, true /* resolve references */))
 	_, _ = w.WriteString(`">`)
 	return nil

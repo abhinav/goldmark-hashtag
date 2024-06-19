@@ -1,0 +1,5 @@
+- name: simple
+  give: |
+    Foo #bar # baz.
+  want: |
+    <p>Foo <span class="hashtag"><a class="p-category" href="/tag/bar">#bar</a></span> # baz.</p>
