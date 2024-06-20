@@ -46,11 +46,11 @@ type Renderer struct {
 
 // Attribute defines an attribute to be added to an HTML tag.
 //
-// Attribute{ Attr: "class", Value: "tag"}
+//	Attribute{ Attr: "class", Value: "tag"}
 //
 // Will result in <a class="tag" ...>
 type Attribute struct {
-	Attr  string
+	Name  string
 	Value string
 }
 
@@ -97,9 +97,9 @@ func (r *Renderer) enter(w util.BufWriter, n *Node) error {
 	r.hasDest.Store(n, struct{}{})
 	_, _ = w.WriteString(`<a `)
 	for _, attr := range r.Attributes {
-		_, _ = w.WriteString(attr.Attr)
+		_, _ = w.WriteString(attr.Name)
 		_, _ = w.WriteString(`="`)
-		_, _ = w.WriteString(attr.Value)
+		_, _ = w.Write(util.EscapeHTML([]byte(attr.Value)))
 		_, _ = w.WriteString(`" `)
 	}
 	_, _ = w.WriteString(`href="`)

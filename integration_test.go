@@ -45,7 +45,7 @@ func TestIntegration_Attributes(t *testing.T) {
 			Resolver: almostAlwaysResolver{},
 			Attributes: []hashtag.Attribute{
 				{
-					Attr:  "class",
+					Name:  "class",
 					Value: "p-category",
 				},
 			},
