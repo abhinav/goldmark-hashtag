@@ -36,7 +36,6 @@ type Extender struct {
 
 	// Attributes are added to the <a> tag.
 	//
-	// Attributes are no escaped and must be valid attributes and values for HTML tags.
 	// Attributes will only be applied if the tag can be resolved by the Resolver.
 	// Defaults to no attributes.
 	Attributes []Attribute
