@@ -37,6 +37,21 @@ func TestIntegration_Resolver(t *testing.T) {
 		})))
 }
 
+func TestIntegration_Attributes(t *testing.T) {
+	t.Parallel()
+
+	testIntegration(t, "attributes.yaml",
+		goldmark.New(goldmark.WithExtensions(&hashtag.Extender{
+			Resolver: almostAlwaysResolver{},
+			Attributes: []hashtag.Attribute{
+				{
+					Name:  "class",
+					Value: "p-category",
+				},
+			},
+		})))
+}
+
 func testIntegration(t *testing.T, file string, md goldmark.Markdown) {
 	testsdata, err := os.ReadFile(filepath.Join("testdata", file))
 	require.NoError(t, err)

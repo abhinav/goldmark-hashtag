@@ -113,6 +113,71 @@ func TestRender_ResolveError(t *testing.T) {
 	assert.ErrorIs(t, err, giveErr)
 }
 
+func TestRenderer_Attributes(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		desc       string
+		attributes []Attribute
+		want       string
+	}{
+		{
+			desc: "no attributes",
+			want: `<span class="hashtag"><a href="/bar">#foo</a></span>`,
+		},
+		{
+			desc:       "single attribute",
+			attributes: []Attribute{{Name: "foo", Value: "bar"}},
+			want:       `<span class="hashtag"><a foo="bar" href="/bar">#foo</a></span>`,
+		},
+		{
+			desc:       "single attribute escape",
+			attributes: []Attribute{{Name: "foo", Value: "\"bar"}},
+			want:       `<span class="hashtag"><a foo="&quot;bar" href="/bar">#foo</a></span>`,
+		},
+		{
+			desc:       "multiple attributes",
+			attributes: []Attribute{{Name: "foo", Value: "bar"}, {Name: "baz", Value: "one"}},
+			want:       `<span class="hashtag"><a foo="bar" baz="one" href="/bar">#foo</a></span>`,
+		},
+		{
+			desc:       "multiple attributes escape",
+			attributes: []Attribute{{Name: "foo", Value: "\"bar"}, {Name: "baz", Value: "<one>"}},
+			want:       `<span class="hashtag"><a foo="&quot;bar" baz="&lt;one&gt;" href="/bar">#foo</a></span>`,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.desc, func(t *testing.T) {
+			t.Parallel()
+
+			r := goldmark.New().Renderer()
+			r.AddOptions(
+				renderer.WithNodeRenderers(
+					util.Prioritized(&Renderer{
+						Resolver: constResolver{
+							Dest: "/bar",
+						},
+						Attributes: tt.attributes,
+					}, 999),
+				),
+			)
+
+			src := []byte("#foo")
+			node := &Node{Tag: src[1:]}
+			node.AppendChild(node,
+				ast.NewTextSegment(text.NewSegment(0, len(src))))
+
+			var buff bytes.Buffer
+			w := bufio.NewWriter(&buff)
+
+			require.NoError(t, r.Render(w, src, node))
+			assert.Equal(t, tt.want, buff.String())
+		})
+	}
+}
+
 type constResolver struct {
 	Dest string
 	Err  error
