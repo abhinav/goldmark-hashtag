@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 )
@@ -234,9 +235,14 @@ func TestParser(t *testing.T) {
 			if tt.want != nil {
 				require.IsType(t, &Node{}, got)
 				got := got.(*Node)
+
+				// Must have only one child, a *ast.Text.
+				require.Equal(t, 1, got.ChildCount(), "child count")
+				child := got.FirstChild().(*ast.Text)
+
 				assert.Equal(t, *tt.want, node{
 					Tag:  string(got.Tag),
-					Body: string(got.Text(src)),
+					Body: string(child.Segment.Value(src)),
 				})
 			} else {
 				assert.Nil(t, got)
