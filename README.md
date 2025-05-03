@@ -1,7 +1,7 @@
 # goldmark-hashtag
 
 [![Go Reference](https://pkg.go.dev/badge/go.abhg.dev/goldmark/hashtag.svg)](https://pkg.go.dev/go.abhg.dev/goldmark/hashtag)
-[![Go](https://github.com/abhinav/goldmark-hashtag/actions/workflows/go.yml/badge.svg)](https://github.com/abhinav/goldmark-hashtag/actions/workflows/go.yml)
+[![CI](https://github.com/abhinav/goldmark-hashtag/actions/workflows/ci.yml/badge.svg)](https://github.com/abhinav/goldmark-hashtag/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/abhinav/goldmark-hashtag/branch/main/graph/badge.svg?token=w6jkI2SQ9u)](https://codecov.io/gh/abhinav/goldmark-hashtag)
 
 goldmark-hashtag is an extension for the [goldmark] Markdown parser
