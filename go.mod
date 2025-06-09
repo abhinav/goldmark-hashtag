@@ -2,7 +2,7 @@ module go.abhg.dev/goldmark/hashtag
 
 go 1.22
 
-toolchain go1.24.3
+toolchain go1.24.4
 
 require (
 	github.com/forPelevin/gomoji v1.3.0
