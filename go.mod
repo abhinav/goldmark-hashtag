@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.24.4
 
 require (
-	github.com/forPelevin/gomoji v1.3.0
+	github.com/forPelevin/gomoji v1.3.1
 	github.com/rivo/uniseg v0.4.7
 	github.com/stretchr/testify v1.10.0
 	github.com/yuin/goldmark v1.7.12
