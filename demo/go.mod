@@ -2,7 +2,7 @@ module go.abhg.dev/goldmark/hashtag/demo
 
 go 1.22
 
-toolchain go1.24.4
+toolchain go1.24.5
 
 replace go.abhg.dev/goldmark/hashtag => ../
 
@@ -12,6 +12,6 @@ require (
 )
 
 require (
-	github.com/forPelevin/gomoji v1.3.0 // indirect
+	github.com/forPelevin/gomoji v1.3.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 )
