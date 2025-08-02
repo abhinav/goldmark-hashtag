@@ -7,7 +7,7 @@ toolchain go1.24.5
 replace go.abhg.dev/goldmark/hashtag => ../
 
 require (
-	github.com/yuin/goldmark v1.7.12
+	github.com/yuin/goldmark v1.7.13
 	go.abhg.dev/goldmark/hashtag v0.4.0
 )
 
