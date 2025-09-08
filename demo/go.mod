@@ -2,7 +2,7 @@ module go.abhg.dev/goldmark/hashtag/demo
 
 go 1.22
 
-toolchain go1.25.0
+toolchain go1.25.1
 
 replace go.abhg.dev/goldmark/hashtag => ../
 
