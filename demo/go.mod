@@ -2,12 +2,12 @@ module go.abhg.dev/goldmark/hashtag/demo
 
 go 1.22
 
-toolchain go1.25.6
+toolchain go1.26.2
 
 replace go.abhg.dev/goldmark/hashtag => ../
 
 require (
-	github.com/yuin/goldmark v1.7.16
+	github.com/yuin/goldmark v1.8.2
 	go.abhg.dev/goldmark/hashtag v0.4.0
 )
 

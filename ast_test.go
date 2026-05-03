@@ -32,8 +32,12 @@ func TestNodeDump(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, strings.Join([]string{
 		"Hashtag {",
+		`    Pos: -1`,
 		`    Tag: foo`,
-		`    Text: "#foo"`,
+		`    Text {`,
+		`        Pos: 0`,
+		`        Value: "#foo"`,
+		`    }`,
 		"}",
 		"",
 	}, "\n"), string(got))
