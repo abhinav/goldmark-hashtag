@@ -1,6 +1,6 @@
 package hashtag
 
-import "github.com/yuin/goldmark/ast"
+import "github.com/yuin/goldmark/v2/ast"
 
 // Kind is the kind of hashtag AST nodes.
 var Kind = ast.NewNodeKind("Hashtag")
