@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/ast"
-	"github.com/yuin/goldmark/text"
+	"github.com/yuin/goldmark/v2"
+	"github.com/yuin/goldmark/v2/ast"
+	"github.com/yuin/goldmark/v2/text"
 	"go.abhg.dev/goldmark/hashtag"
 )
 
